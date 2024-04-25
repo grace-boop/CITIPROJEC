@@ -1,0 +1,7 @@
+Lib/
+Readme.txt
+Scripts/
+data/
+pyvenv.cfg
+result/
+sentences.txt
