@@ -44,73 +44,11 @@ for word in wordlist:
             else:
                 print(f"The word '{word}' is not in the pretrained model.")
 '''
-'''
-for  Word in wordlist:
-    similar_words = word2vec_model.wv.most_similar(Word,topn=5)
-    print("与"+Word+"最相似的词：")
-    for word, similarity in similar_words:
-        print(word, similarity)
-'''
 #stoplist:if出現這些字則句子不算數，可以改!!!!
 stoplist = ["not","no"]
 '''
-word_vectors = KeyedVectors.load_word2vec_format(load('word2vec-google-news-300', return_path=True), binary=True)
-for word in wordlist:
-    if word in word_vectors:
-        print(f"The word '{word}' is in the pretrained model.")
-    else:
-        vocabulary = list(word_vectors.index_to_key)
-        similar_word, _ = process.extractOne(word, vocabulary)
-        if similar_word:
-            similar_words = word_vectors.similar_by_word(similar_word)
-            similar_words = similar_words[:5]
-        else:
-            print(f"'{word}' is not in the vocabulary.")
-
-    for similarword, similarity in similar_words:
-        if similarword in word_vectors:
-            print(f"The word '{word}' is similar to'{similarword,similarity}' in the pretrained model.")
-            break
-        else:
-            print(f"The word '{word}' is not in the pretrained model.")
-'''
-'''
-def lemmatize_sentence(sentence):
-    lemmatizer = WordNetLemmatizer()
-    tokens = nltk.word_tokenize(sentence)
-    lemmatized_tokens = [lemmatizer.lemmatize(token.lower()) for token in tokens]
-    lemmatized_sentence = " ".join(lemmatized_tokens)
-    return lemmatized_sentence
-
-def caculate_vector(sentence):
-    tokens = sentence.lower().split()
-    word_vectors = [word2vec_model[word] for word in tokens if word in word2vec_model]
-    if not word_vectors:
-        return None
-    sentence_vector = np.mean(word_vectors, axis=0)
-    return sentence_vector
-
-def cosine_similarity(vector1, vector2):
-    dot_product = np.dot(vector1, vector2)
-    norm_vector1 = np.linalg.norm(vector1)
-    norm_vector2 = np.linalg.norm(vector2)
-    similarity = dot_product / (norm_vector1 * norm_vector2)
-    return similarity
-
-def sentence_similarity(sentence_vector, word_vector):
-    similarities = [cosine_similarity(word, word_vector) for word in sentence_vector]
-    return np.mean(similarities)
-'''
 def sentence_vector(seq, model):
-    '''
-    key_to_index = model.wv.key_to_index
-    index_to_key = model.wv.index_to_key
 
-    for key in wordlist:
-        for word, index in key_to_index.items():
-            if key == word:
-                print(word, index)
-    '''
     vectors = []
     for word in seq:
         #print(model.wv.vocab)
@@ -120,7 +58,7 @@ def sentence_vector(seq, model):
     if len(vectors) == 0:
         return np.zeros(model.vector_size)
     return np.mean(vectors, axis=0)
-
+'''
 def lemmatize_sentence(sentence):
     lemmatizer = WordNetLemmatizer()
     tokens = nltk.word_tokenize(sentence)
@@ -130,6 +68,7 @@ def lemmatize_sentence(sentence):
 
 def citiproject(files,dir):
     workbook = Workbook()
+    bankname = dir
     #file是一個pdf
     for file in files:
         print(file)
@@ -144,6 +83,7 @@ def citiproject(files,dir):
                 text = page.get_text()
                 textlist.append(text)
 
+            '''
             process_text = []
             process_word = []
             for text in textlist:
@@ -157,11 +97,11 @@ def citiproject(files,dir):
                     words = word_tokenize(lemmatized_sentence)
                     process_text.append(lemmatized_sentence)
                     process_word.append(words)
-            '''
             print(process_text[0])
             print(process_text[1])
             print(process_word[0])
             print(process_word[1])
+            
             for page_number in range(pdf_document.page_count):
                 page = pdf_document.load_page(page_number)
                 text = page.get_text()
@@ -176,7 +116,6 @@ def citiproject(files,dir):
                     lemmatext.append(lemmatized_sentence)
                     process_word.append(words)
                 textlist.append(text)
-            '''
             #print(textlist)
             
             #存進txt
@@ -190,7 +129,7 @@ def citiproject(files,dir):
             for i in range(len(model.wv.index_to_key)):
                 for word in wordlist:
                     model.wv.index_to_key[i] = model.wv.index_to_key[i].replace(word.replace(' ', '_'), word)
-            '''
+            
             key_to_index = model.wv.key_to_index
             index_to_key = model.wv.index_to_key
             for key in wordlist:
@@ -289,7 +228,7 @@ def citiproject(files,dir):
 def traverse_folders(root_path):
     for root, dirs, files in os.walk(root_path):
         for dir in dirs:
-            #print("資料夾:", dir)
+            print("資料夾:", dir)
             path = "./data/"+dir
             files = os.listdir(path)
             citiproject(files,dir)
